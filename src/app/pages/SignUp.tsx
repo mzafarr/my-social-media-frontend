@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../Helper/BaseUrl";
-import { errorToast, success } from "../Helper/Toast";
+import { errorToast, success } from "../../../Toast";
 import { ToastContainer } from "react-toastify";
 
 const SignUp = () => {

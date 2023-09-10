@@ -3,7 +3,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../Helper/BaseUrl";
-import { errorToast, success } from "../Helper/Toast";
+import { errorToast, success } from "../../Toast";
 import { ToastContainer } from "react-toastify";
 
 const SignIn = () => {
