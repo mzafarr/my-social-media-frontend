@@ -1,40 +1,56 @@
+"use client";
 import { useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../Helper/BaseUrl";
-import { errorToast, success } from "../../../Toast";
+import { errorToast, successToast } from "../Toast";
 import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
-  const [id, setId] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   // const [confirmPassword, setConfirmPassword] = useState("");
-
+  const router = useRouter();
   const handleSignUp = async (event: any) => {
     event.preventDefault();
 
-    if (id.trim() === "" || name.trim() === "" || password.trim() === "") {
-      errorToast("One or more empty fields."); 
+    if (
+      username.trim() === "" ||
+      name.trim() === "" ||
+      password.trim() === ""
+    ) {
+      errorToast("One or more empty fields.");
       return;
     }
 
     try {
-      await axios.post(`${BASE_URL}/User/signup`, {
-        name,
-        id,
-        password,
-      });
-      success("Registration Completed! Now login.");
+      await axios.post(
+        `http://localhost:3000/User/signup`,
+        {
+          name,
+          username,
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      successToast("Registration Completed! Now login.");
+      router.push("/SignIn");
     } catch (error) {
       console.error(error);
-      error("Something went wrong.");
+      errorToast("Something went wrong.");
     }
   };
 
   return (
-    <div className="bg-gray-900 h-screen">
+    <div className="h-screen flex items-center justify-center">
       <div className="px-4 py-16 text-center flex flex-col items-center justify-center">
-        <h2 className="text-4xl font-bold mb-12 text-green-400">Sign Up</h2>
+        <h1 className="text-4xl sm:text-6xl font-bold mb-16 mt-4">Sign Up</h1>
         <div className="max-w-xs mx-auto">
           <input
             required
@@ -47,9 +63,17 @@ const SignUp = () => {
           <input
             required
             type="text"
-            placeholder="Email/Username"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="focus:outline-none text-slate-800 w-full mb-6 px-4 py-3 rounded"
+          />
+          <input
+            required
+            type="text"
+            placeholder="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="focus:outline-none text-slate-800 w-full mb-6 px-4 py-3 rounded"
           />
           <input

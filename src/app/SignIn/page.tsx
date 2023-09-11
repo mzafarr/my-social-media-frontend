@@ -1,54 +1,61 @@
+"use client";
 import { useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../Helper/BaseUrl";
-import { errorToast, success } from "../../Toast";
 import { ToastContainer } from "react-toastify";
+import { errorToast, successToast } from "../Toast";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
   const [_, setCookies] = useCookies(["access_token"]);
 
-  const [id, setId] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSignIn = async (event: any) => {
     event.preventDefault();
-    if (id.trim() === "" || password.trim() === "") {
+    if (username.trim() === "" || password.trim() === "") {
       errorToast("One or more empty fields.");
       return;
     }
-
     try {
-      const result = await axios.post(`${BASE_URL}/User/signin`, {
-        id: id,
-        password: password,
-      });
-
+      const result = await axios.post(
+        `http://localhost:3000/User/signin`,
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(result);
       setCookies("access_token", result.data.token);
-      window.localStorage.setItem("userID", result.data.userID);
-      success("Successfully signed in.") 
-      navigate("/passwordManager");
+      window.localStorage.setItem("username", result.data.username);
+      successToast("Successfully signed in.");
+      router.push("/Posts");
     } catch (error) {
       console.error(error);
-      errorToast("Id or password is wrong.")
+      errorToast("Username or password is wrong.");
     }
   };
 
   return (
-    <div className="bg-gray-900 h-screen">
+    <div className="h-screen flex items-center justify-center">
       <div className="px-4 py-16 text-center flex flex-col items-center justify-center">
-        <h2 className="text-4xl font-bold mb-12 text-green-400">Sign In</h2>
+        <h1 className="text-4xl sm:text-6xl font-bold mb-16 mt-4">Sign In</h1>
         <div className="max-w-xs mx-auto">
           <form>
             <input
               required
               type="text"
-              placeholder="Email/Username"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="focus:outline-none text-slate-800   w-full mb-6 px-6 py-3 rounded"
             />
             <input
@@ -69,7 +76,7 @@ const SignIn = () => {
           </form>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

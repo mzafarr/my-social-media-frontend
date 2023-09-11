@@ -1,11 +1,8 @@
-import "./App.css";
-import Navbar from "./components/Navbar";
-import Homepage from "./pages/HomePage";
+import Homepage from "./HomePage/page";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
       <Homepage />
     </>
   );
